@@ -25,7 +25,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, home-manager, modules, ...}@inputs:
+  outputs = { nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
     in
@@ -36,29 +36,38 @@
           inherit inputs;
           user = "dawid";
           host = "cubic";
+        };
           modules = [
             ./hosts/cubic.nix
             inputs.nixvim.nixosModules.nixvim
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                user = "dawid";
+                host = "cubic";
+              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.cubic = import ./home/home-cubic.nix;
+            }
           ];
         };
       };
+
       server = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
           user = "dawid";
           host = "server";
+        };
           modules = [
             ./hosts
           ];
         };
       };
 
-    };
-
-    homeConfigurations.nixos = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.${system};
-      modules = [ ./home/home-cubic.nix ];
-    };
-    };
 }
+
+
 

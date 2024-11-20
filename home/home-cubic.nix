@@ -19,6 +19,7 @@
 #        ./programs/firefox.nix
 
         # system
+         ./system/home.nix
 #        ./system/tofi.nix
         ./system/wofi.nix
 #        ./system/dunst.nix

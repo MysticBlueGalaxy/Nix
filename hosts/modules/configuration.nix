@@ -6,8 +6,7 @@
 
 {
   imports = [
-      ./hardware-configuration.nix # Include the results of the hardware scan.true
-      ./modules/bundle.nix
+      ./bundle.nix
     ];
   nix = {
     settings.auto-optimise-store = true;
