@@ -65,7 +65,25 @@
             ./hosts
           ];
         };
+    nixosConfigurations = {
+      nixos = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          user = "dawid";
+          host = "cubic";
+        };
+          modules = [
+            ./hosts/cubic.nix
+            inputs.nixvim.nixosModules.nixvim
+	  ];
+        };
+     };
+
+
+
       };
+     
+
 
 }
 
