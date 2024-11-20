@@ -25,7 +25,7 @@
   # Enable the Flakes feature and the accompanying new nix command-line tool
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "cubic"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary

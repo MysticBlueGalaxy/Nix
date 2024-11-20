@@ -4,17 +4,16 @@
   inputs = {
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
     hyprsunset.url = "github:hyprwm/hyprsunset";
     hyprsysteminfo.url = "github:/hyprwm/hyprsysteminfo";
     hyprpolkitagent.url = "github:hyprwm/hyprpolkitagent";
 
-    hyprland = {
-      type = "git";
-      url = "https://github.com/hyprwm/Hyprland";
-      submodules = true;
-    };
+#    hyprland = {
+#      type = "git";
+#      url = "https://github.com/hyprwm/Hyprland";
+#      submodules = true;
+#    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -26,34 +25,40 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, nixpkgs-stable, home-manager, ...}@inputs:
+  outputs = { nixpkgs, home-manager, modules, ...}@inputs:
     let
       system = "x86_64-linux";
-      host = "cubic";
-      user = "dawid";
     in
     {
-    nixosConfigurations ={
+    nixosConfigurations = {
       cubic = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          pkgs-stable = import nixpkgs-stable {
-          inherit system;
           inherit inputs;
-          inherit user;
-          inherit host;
-          config.allowUnfree = true;
+          user = "dawid";
+          host = "cubic";
+          modules = [
+            ./hosts/cubic.nix
+            inputs.nixvim.nixosModules.nixvim
+          ];
         };
-        inherit inputs system;
       };
-      modules = [
-        ./hosts
-        inputs.nixvim.nixosModules.nixvim 
-      ];
+      server = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          user = "dawid";
+          host = "server";
+          modules = [
+            ./hosts
+          ];
+        };
+      };
+
     };
+
     homeConfigurations.nixos = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
-      modules = [ ./home-manager/home.nix ];
+      modules = [ ./home/home-cubic.nix ];
     };
     };
-  };
 }
+
